@@ -33,6 +33,7 @@ async function createBrowserSession(browser_args, browser_logger) {
   logger = browser_logger;
 
   const browser = await chromium.puppeteer.launch({
+    executablePath: process.env.IS_OFFLINE ? undefined : await chromium.executablePath,
     headless: args.headless,
     defaultViewport: {
       width: WindowSize.width,
@@ -46,7 +47,7 @@ async function createBrowserSession(browser_args, browser_logger) {
     args: [
       `--user-agent=${UserAgent}`,
       `--window-size=${WindowSize.width},${WindowSize.height}`,
-    ].concat(args.browserOptions, args["--"] || []),
+    ].concat(args.browserOptions, args["--"] || [], chromium.args),
   });
 
   // go to page, start har etc
